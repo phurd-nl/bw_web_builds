@@ -7,7 +7,7 @@ help:
 	@echo "Use either: clean, checkout, build, tar, or full"
 	@echo "Or for container builds use: container or container-extract"
 	@echo
-	@echo "By default docker is used, you can force podman by using podman or podman-extract"
+	@echo "By default podman is used (NextVault), you can force docker by using docker or docker-extract"
 	@echo "You can also define the default via a '.env' file, see the '.env.template' for details"
 	@echo
 	@echo "For releasing a new version you can use gh-prepare and gh-release"
@@ -23,8 +23,9 @@ endif
 # Force docker to output the progress in plain
 BUILDKIT_PROGRESS=plain
 
+# NextVault: default to podman (rootless). Override with `make docker` or a .env.
 ifndef CONTAINER_CMD
-  CONTAINER_CMD = docker
+  CONTAINER_CMD = podman
 endif
 
 clean:
