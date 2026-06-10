@@ -35,8 +35,11 @@ WORKDIR /bw_web_builds
 COPY scripts ./scripts
 # Use a glob pattern here so builds will continue even if the `.build_env` does not exists
 COPY .build_env* ./
+# NextVault brand overlay (assets + display-string swaps applied between checkout and build)
+COPY nextvault-brand/overlay ./nextvault-brand/overlay
 
 RUN ./scripts/checkout_web_vault.sh
+RUN ./scripts/rebrand.sh
 RUN ./scripts/build_web_vault.sh
 RUN mv "${VAULT_FOLDER}/apps/web/build" ./web-vault
 

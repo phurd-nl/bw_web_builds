@@ -4,6 +4,14 @@ docker_builds
 container_builds
 web-vault
 
+# NextVault brand tooling — only overlay/ is needed in the build context
+nextvault-brand/node_modules
+nextvault-brand/*.mjs
+nextvault-brand/package*.json
+nextvault-brand/preview-*.png
+nextvault-brand/*.svg
+checkout.log
+
 # Documentation
 *.md
 *.txt
