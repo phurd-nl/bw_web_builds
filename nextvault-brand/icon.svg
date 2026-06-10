@@ -1,0 +1,14 @@
+<svg version="1.1" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+  <title>NextVault</title>
+  <defs>
+    <linearGradient id="nv" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F7A82A"/>
+      <stop offset="1" stop-color="#E8870E"/>
+    </linearGradient>
+  </defs>
+  <!-- Circle-N badge: Nextlink/NextPass orange -->
+  <circle cx="30" cy="30" r="29" fill="url(#nv)"/>
+  <!-- White N with a triangular notch at lower-left revealing the orange (Nextlink signature) -->
+  <path fill="#FFFFFF" d="M17 45 L17 15 L25 15 L36 33 L36 15 L43 15 L43 45 L35 45 L24 27 L24 45 Z"/>
+  <path fill="#E8870E" d="M17 45 L24 45 L24 36 Z"/>
+</svg>
