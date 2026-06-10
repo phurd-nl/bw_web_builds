@@ -66,11 +66,26 @@ replace '>Vaultwarden Web<' '>NextVault Web<' "${SRC}/app/layouts/frontend-layou
 replace 'for Vaultwarden (an' 'for NextVault (an' "${SRC}/app/layouts/frontend-layout.component.html"
 replace 'Vaultwarden is not associated' 'NextVault is not associated' "${SRC}/app/layouts/frontend-layout.component.html"
 
+# Login page (anon-layout) footer — shared component lib, same strings as the app footer.
+# This is the most visible surface (unauthenticated landing/login page).
+ANON="${VAULT_FOLDER}/libs/components/src/anon-layout/anon-layout.component.html"
+replace '>Vaultwarden Web<' '>NextVault Web<' "$ANON"
+replace 'for Vaultwarden (an' 'for NextVault (an' "$ANON"
+replace 'Vaultwarden is not associated' 'NextVault is not associated' "$ANON"
+
 # Duo 2FA redirect logo alt
 replace 'alt="Vaultwarden"' 'alt="NextVault"' "${SRC}/connectors/duo-redirect.html"
 
 # TOTP issuer label shown in authenticator apps for account 2FA
 replace 'otpauth://totp/Vaultwarden:' 'otpauth://totp/NextVault:' "${SRC}/app/auth/settings/two-factor/two-factor-setup-authenticator.component.ts"
 replace '&issuer=Vaultwarden' '&issuer=NextVault' "${SRC}/app/auth/settings/two-factor/two-factor-setup-authenticator.component.ts"
+
+# Safety net: no user-facing "Vaultwarden Web" text node may survive in any HTML
+# template across apps/ or libs/. Catches strings that move/appear in a future
+# web-vault version bump before they ship to the login page.
+if grep -rn '>Vaultwarden Web<' "${VAULT_FOLDER}/apps" "${VAULT_FOLDER}/libs" 2>/dev/null; then
+  echo "rebrand: residual '>Vaultwarden Web<' template text above — add the file to rebrand.sh" >&2
+  exit 1
+fi
 
 echo "==> NextVault rebrand: done"
