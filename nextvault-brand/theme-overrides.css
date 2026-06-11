@@ -1,0 +1,70 @@
+/* ============================================================
+ * NextVault theme overrides (Tier 1 restyle)
+ * Appended to the END of libs/components/src/tw-theme.css by
+ * scripts/rebrand.sh, so these win the cascade over upstream.
+ *
+ * Because this lands AFTER upstream's .theme_dark block, every
+ * variable set in the :root block below MUST be restated in the
+ * .theme_dark block (with a dark-appropriate value), or dark mode
+ * would inherit the light value.
+ * ============================================================ */
+
+:root,
+.theme_light {
+  /* Brand ramp: NextVault orange (from #E8870E / #F7A82A).
+   * 600/700 are darkened vs the logo orange so white-on-brand
+   * buttons keep >=4:1 contrast. */
+  --color-brand-050: #fff8ef;
+  --color-brand-100: #fdeedd;
+  --color-brand-200: #fad9ac;
+  --color-brand-300: #f7c076;
+  --color-brand-400: #f4a943;
+  --color-brand-500: #ee921d;
+  --color-brand-600: #c26c07;
+  --color-brand-700: #9e5705;
+  --color-brand-800: #7c4404;
+  --color-brand-900: #5c3203;
+  --color-brand-950: #3a2002;
+  --color-brand-950-rgb: 58, 32, 2;
+
+  /* Legacy palette (light) — links, buttons, soft fills */
+  --color-primary-100: 253 238 221;
+  --color-primary-600: 194 108 7;
+  --color-primary-700: 158 87 5;
+  --color-background-alt: 244 247 251;
+  --color-background-alt2: 22 32 46;
+  --color-background-alt3: 22 32 46;
+  --color-background-alt4: 12 19 30;
+  --color-hover-default: rgb(232 135 14 / 0.1);
+  --color-bw-blue: 232 135 14;
+
+  /* Side nav: deep navy surface, orange active-item accent */
+  --color-nav-bg-primary: #141d2b;
+  --color-nav-bg-primary-strong: #0c131e;
+  --color-nav-bg-primary-hover: rgb(255 255 255 / 0.08);
+  --color-nav-bg-primary-hover-strong: rgb(255 255 255 / 0.16);
+  --color-nav-border-primary: #e8870e;
+  --color-nav-border-primary-focus: #f7a82a;
+}
+
+.theme_dark {
+  /* Lighter orange shades carry links/actions on dark surfaces */
+  --color-primary-100: 92 50 3;
+  --color-primary-600: 247 168 42;
+  --color-primary-700: 250 217 172;
+  /* Restate upstream dark backgrounds (see header comment) */
+  --color-background-alt: 18 26 39;
+  --color-background-alt2: 47 52 61;
+  --color-background-alt3: 48 57 70;
+  --color-background-alt4: 18 26 39;
+  --color-hover-default: rgb(247 168 42 / 0.12);
+  --color-bw-blue: 232 135 14;
+
+  /* Keep upstream's dark slate nav surfaces; orange accent only */
+  --color-nav-bg-primary: var(--color-gray-800);
+  --color-nav-bg-primary-strong: var(--color-gray-600);
+  --color-nav-bg-primary-hover: rgba(var(--color-gray-400-rgb), 0.2);
+  --color-nav-bg-primary-hover-strong: rgba(var(--color-gray-400-rgb), 0.6);
+  --color-nav-border-primary: #e8870e;
+  --color-nav-border-primary-focus: #f7a82a;
+}

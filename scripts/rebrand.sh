@@ -61,6 +61,19 @@ replace() {
   echo "    rebranded: ${file#"${SRC}"/}"
 }
 
+# Theme overrides: appended to the end of the component-library theme so they
+# win the cascade. Sentinel checks fail loudly if upstream moves/renames the
+# variables this file overrides.
+TW_THEME="${VAULT_FOLDER}/libs/components/src/tw-theme.css"
+if ! grep -q -- '--color-brand-600:' "${TW_THEME}" 2>/dev/null; then
+  echo "rebrand: theme variables not found in ${TW_THEME}" >&2
+  echo "rebrand: web client theme structure likely changed — update theme-overrides.css + rebrand.sh" >&2
+  exit 1
+fi
+cat "${BASEDIR}/../nextvault-brand/theme-overrides.css" >> "${TW_THEME}"
+grep -q 'NextVault theme overrides' "${TW_THEME}" || { echo "rebrand: theme append failed" >&2; exit 1; }
+echo "    rebranded: libs/components/src/tw-theme.css (NextVault theme appended)"
+
 echo "==> NextVault rebrand: swapping display strings"
 
 # Browser tab title + logo alt + brand accent colors (Bitwarden blue -> NextVault orange)

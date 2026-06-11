@@ -39,6 +39,8 @@ COPY .build_env* ./
 COPY nextvault-brand/overlay ./nextvault-brand/overlay
 # Inline-SVG brand components, copied over libs/assets/src/svg/svgs/ by rebrand.sh
 COPY nextvault-brand/svgs ./nextvault-brand/svgs
+# Theme variable overrides, appended to tw-theme.css by rebrand.sh
+COPY nextvault-brand/theme-overrides.css ./nextvault-brand/theme-overrides.css
 
 RUN ./scripts/checkout_web_vault.sh
 RUN ./scripts/rebrand.sh
