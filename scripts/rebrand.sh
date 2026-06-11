@@ -27,16 +27,22 @@ fi
 echo "==> NextVault rebrand: overlaying brand assets"
 cp -rv "${OVERLAY}/." "${SRC}/"
 
-# Login/lock page hero illustration (pageIcon: VaultIcon in oss-routing.module.ts)
-# lives outside apps/web/src, so it can't ride the overlay copy above.
-VAULT_ICON="${VAULT_FOLDER}/libs/assets/src/svg/svgs/vault.icon.ts"
-if [ ! -f "${VAULT_ICON}" ]; then
-  echo "rebrand: VaultIcon source not found at ${VAULT_ICON}" >&2
-  echo "rebrand: web client structure likely changed across versions — update scripts/rebrand.sh" >&2
-  exit 1
-fi
-cp -v "${BASEDIR}/../nextvault-brand/vault.icon.ts" "${VAULT_ICON}"
-echo "    rebranded: libs/assets/src/svg/svgs/vault.icon.ts"
+# Inline-SVG brand components live outside apps/web/src, so they can't ride the
+# overlay copy above. Every file in nextvault-brand/svgs/ replaces its namesake
+# in libs/assets/src/svg/svgs/ (vault.icon.ts = login hero, bitwarden-logo.icon.ts
+# = login/landing header, shield.ts = collapsed side-nav, password-manager.ts =
+# open side-nav). Exports keep upstream names so imports resolve unchanged.
+SVGS_DST="${VAULT_FOLDER}/libs/assets/src/svg/svgs"
+for src in "${BASEDIR}/../nextvault-brand/svgs/"*.ts; do
+  name="$(basename "$src")"
+  if [ ! -f "${SVGS_DST}/${name}" ]; then
+    echo "rebrand: expected upstream SVG component not found: ${SVGS_DST}/${name}" >&2
+    echo "rebrand: web client structure likely changed across versions — update scripts/rebrand.sh" >&2
+    exit 1
+  fi
+  cp -v "$src" "${SVGS_DST}/${name}"
+  echo "    rebranded: libs/assets/src/svg/svgs/${name}"
+done
 
 # replace OLD NEW FILE  — verifies OLD exists, replaces, verifies NEW lands.
 replace() {
