@@ -27,6 +27,17 @@ fi
 echo "==> NextVault rebrand: overlaying brand assets"
 cp -rv "${OVERLAY}/." "${SRC}/"
 
+# Login/lock page hero illustration (pageIcon: VaultIcon in oss-routing.module.ts)
+# lives outside apps/web/src, so it can't ride the overlay copy above.
+VAULT_ICON="${VAULT_FOLDER}/libs/assets/src/svg/svgs/vault.icon.ts"
+if [ ! -f "${VAULT_ICON}" ]; then
+  echo "rebrand: VaultIcon source not found at ${VAULT_ICON}" >&2
+  echo "rebrand: web client structure likely changed across versions — update scripts/rebrand.sh" >&2
+  exit 1
+fi
+cp -v "${BASEDIR}/../nextvault-brand/vault.icon.ts" "${VAULT_ICON}"
+echo "    rebranded: libs/assets/src/svg/svgs/vault.icon.ts"
+
 # replace OLD NEW FILE  — verifies OLD exists, replaces, verifies NEW lands.
 replace() {
   local old="$1" new="$2" file="$3"

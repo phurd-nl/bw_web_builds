@@ -37,6 +37,8 @@ COPY scripts ./scripts
 COPY .build_env* ./
 # NextVault brand overlay (assets + display-string swaps applied between checkout and build)
 COPY nextvault-brand/overlay ./nextvault-brand/overlay
+# Login hero icon source, copied over libs/.../vault.icon.ts by rebrand.sh
+COPY nextvault-brand/vault.icon.ts ./nextvault-brand/vault.icon.ts
 
 RUN ./scripts/checkout_web_vault.sh
 RUN ./scripts/rebrand.sh
