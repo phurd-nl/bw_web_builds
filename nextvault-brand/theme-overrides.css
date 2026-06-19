@@ -1,7 +1,13 @@
 /* ============================================================
- * NextVault theme overrides (Tier 1 restyle)
+ * NextVault theme overrides (Tier 2 — "Aurora" dark restyle)
  * Appended to the END of libs/components/src/tw-theme.css by
  * scripts/rebrand.sh, so these win the cascade over upstream.
+ *
+ * Palette is matched to NextPass (sibling product) so the two
+ * read as one suite: deep near-black-navy surfaces with an
+ * indigo -> blue -> cyan accent. ALL prior orange/gold is gone.
+ * Source: NextPass app/assets/stylesheets/custom.css
+ *   bg-base #070b16 | indigo #6366f1 | blue #3b82f6 | cyan #22d3ee
  *
  * Because this lands AFTER upstream's .theme_dark block, every
  * variable set in the :root block below MUST be restated in the
@@ -11,60 +17,59 @@
 
 :root,
 .theme_light {
-  /* Brand ramp: NextVault orange (from #E8870E / #F7A82A).
-   * 600/700 are darkened vs the logo orange so white-on-brand
-   * buttons keep >=4:1 contrast. */
-  --color-brand-050: #fff8ef;
-  --color-brand-100: #fdeedd;
-  --color-brand-200: #fad9ac;
-  --color-brand-300: #f7c076;
-  --color-brand-400: #f4a943;
-  --color-brand-500: #ee921d;
-  --color-brand-600: #c26c07;
-  --color-brand-700: #9e5705;
-  --color-brand-800: #7c4404;
-  --color-brand-900: #5c3203;
-  --color-brand-950: #3a2002;
-  --color-brand-950-rgb: 58, 32, 2;
+  /* Brand ramp: Aurora blue (centered on #3b82f6).
+   * 600/700 are darkened so white-on-brand buttons keep >=4:1 contrast. */
+  --color-brand-050: #eef4ff;
+  --color-brand-100: #dce8ff;
+  --color-brand-200: #c0d6ff;
+  --color-brand-300: #97baff;
+  --color-brand-400: #6394fb;
+  --color-brand-500: #3b82f6;
+  --color-brand-600: #2563eb;
+  --color-brand-700: #1d4ed8;
+  --color-brand-800: #1e40af;
+  --color-brand-900: #1e3a8a;
+  --color-brand-950: #172554;
+  --color-brand-950-rgb: 23, 37, 84;
 
   /* Legacy palette (light) — links, buttons, soft fills */
-  --color-primary-100: 253 238 221;
-  --color-primary-600: 194 108 7;
-  --color-primary-700: 158 87 5;
+  --color-primary-100: 220 232 255;
+  --color-primary-600: 37 99 235;
+  --color-primary-700: 29 78 216;
   --color-background-alt: 244 247 251;
-  --color-background-alt2: 22 32 46;
-  --color-background-alt3: 22 32 46;
-  --color-background-alt4: 12 19 30;
-  --color-hover-default: rgb(232 135 14 / 0.1);
-  --color-bw-blue: 232 135 14;
+  --color-background-alt2: 7 11 22;
+  --color-background-alt3: 7 11 22;
+  --color-background-alt4: 7 11 22;
+  --color-hover-default: rgb(59 130 246 / 0.1);
+  --color-bw-blue: 59 130 246;
 
-  /* Side nav: deep navy surface, orange active-item accent */
-  --color-nav-bg-primary: #141d2b;
-  --color-nav-bg-primary-strong: #0c131e;
+  /* Side nav: near-black navy surface, aurora-blue active accent, cyan focus */
+  --color-nav-bg-primary: #0b1220;
+  --color-nav-bg-primary-strong: #070b16;
   --color-nav-bg-primary-hover: rgb(255 255 255 / 0.08);
   --color-nav-bg-primary-hover-strong: rgb(255 255 255 / 0.16);
-  --color-nav-border-primary: #e8870e;
-  --color-nav-border-primary-focus: #f7a82a;
+  --color-nav-border-primary: #3b82f6;
+  --color-nav-border-primary-focus: #22d3ee;
 }
 
 .theme_dark {
-  /* Lighter orange shades carry links/actions on dark surfaces */
-  --color-primary-100: 92 50 3;
-  --color-primary-600: 247 168 42;
-  --color-primary-700: 250 217 172;
-  /* Restate upstream dark backgrounds (see header comment) */
-  --color-background-alt: 18 26 39;
-  --color-background-alt2: 47 52 61;
-  --color-background-alt3: 48 57 70;
-  --color-background-alt4: 18 26 39;
-  --color-hover-default: rgb(247 168 42 / 0.12);
-  --color-bw-blue: 232 135 14;
+  /* Lighter aurora-blue shades carry links/actions on dark surfaces */
+  --color-primary-100: 30 58 138;
+  --color-primary-600: 96 154 251;
+  --color-primary-700: 151 186 255;
+  /* Deep near-black-navy backgrounds (NextPass #070b16 base) */
+  --color-background-alt: 7 11 22;
+  --color-background-alt2: 15 21 38;
+  --color-background-alt3: 20 28 48;
+  --color-background-alt4: 7 11 22;
+  --color-hover-default: rgb(59 130 246 / 0.12);
+  --color-bw-blue: 96 154 251;
 
-  /* Keep upstream's dark slate nav surfaces; orange accent only */
-  --color-nav-bg-primary: var(--color-gray-800);
-  --color-nav-bg-primary-strong: var(--color-gray-600);
-  --color-nav-bg-primary-hover: rgba(var(--color-gray-400-rgb), 0.2);
-  --color-nav-bg-primary-hover-strong: rgba(var(--color-gray-400-rgb), 0.6);
-  --color-nav-border-primary: #e8870e;
-  --color-nav-border-primary-focus: #f7a82a;
+  /* Deep navy nav surfaces; aurora-blue accent, cyan focus */
+  --color-nav-bg-primary: #070b16;
+  --color-nav-bg-primary-strong: #04060d;
+  --color-nav-bg-primary-hover: rgb(255 255 255 / 0.06);
+  --color-nav-bg-primary-hover-strong: rgb(255 255 255 / 0.12);
+  --color-nav-border-primary: #3b82f6;
+  --color-nav-border-primary-focus: #22d3ee;
 }
