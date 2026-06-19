@@ -110,6 +110,61 @@ replace 'alt="Vaultwarden"' 'alt="NextVault"' "${SRC}/connectors/duo-redirect.ht
 replace 'otpauth://totp/Vaultwarden:' 'otpauth://totp/NextVault:' "${SRC}/app/auth/settings/two-factor/two-factor-setup-authenticator.component.ts"
 replace '&issuer=Vaultwarden' '&issuer=NextVault' "${SRC}/app/auth/settings/two-factor/two-factor-setup-authenticator.component.ts"
 
+echo "==> NextVault: applying source patches"
+
+# SSO-only login auto-redirect: send the web client straight to the IdP instead
+# of showing the email/login page. Applied as a git patch (the change is in
+# libs/auth, outside the apps/web/src overlay path). Fails loudly if the patch
+# no longer applies — a web-vault version bump that moves login.component.ts
+# must be noticed, not silently ship the email-prompt login page.
+LOGIN_COMPONENT="${VAULT_FOLDER}/libs/auth/src/angular/login/login.component.ts"
+AUTOREDIRECT_PATCH="${BASEDIR}/../nextvault-brand/patches/login-sso-autoredirect.patch"
+if [ ! -f "${AUTOREDIRECT_PATCH}" ]; then
+  echo "rebrand: SSO auto-redirect patch not found at ${AUTOREDIRECT_PATCH}" >&2
+  exit 1
+fi
+if grep -q 'maybeAutoRedirectToSso' "${LOGIN_COMPONENT}"; then
+  echo "    rebrand: SSO auto-redirect already present upstream — skipping patch"
+else
+  if ! git -C "${VAULT_FOLDER}" apply --verbose "${AUTOREDIRECT_PATCH}"; then
+    echo "rebrand: failed to apply login-sso-autoredirect.patch" >&2
+    echo "rebrand: login.component.ts likely changed across versions — regenerate the patch" >&2
+    exit 1
+  fi
+  grep -q 'maybeAutoRedirectToSso' "${LOGIN_COMPONENT}" || {
+    echo "rebrand: SSO auto-redirect patch did not land" >&2; exit 1;
+  }
+  echo "    rebranded: libs/auth/src/angular/login/login.component.ts (SSO auto-redirect)"
+fi
+
+# Hide the Send nav item: sharing moves to NextPass and Send is disabled
+# server-side via SENDS_ALLOWED=false. (SENDS_ALLOWED blocks the API but does
+# NOT emit a DisableSend policy, so the nav would otherwise still render and
+# error on click.) Fails loud if the nav block moved across versions.
+SEND_LAYOUT="${VAULT_FOLDER}/apps/web/src/app/layouts/user-layout.component.html"
+HIDE_SEND_PATCH="${BASEDIR}/../nextvault-brand/patches/hide-send-nav.patch"
+if [ ! -f "${HIDE_SEND_PATCH}" ]; then
+  echo "rebrand: hide-send patch not found at ${HIDE_SEND_PATCH}" >&2
+  exit 1
+fi
+if grep -q 'Send removed; secure sharing is handled by NextPass' "${SEND_LAYOUT}"; then
+  echo "    rebrand: Send nav already removed — skipping patch"
+else
+  if ! git -C "${VAULT_FOLDER}" apply --verbose "${HIDE_SEND_PATCH}"; then
+    echo "rebrand: failed to apply hide-send-nav.patch" >&2
+    echo "rebrand: user-layout.component.html likely changed across versions — regenerate the patch" >&2
+    exit 1
+  fi
+  grep -q 'Send removed; secure sharing is handled by NextPass' "${SEND_LAYOUT}" || {
+    echo "rebrand: hide-send patch did not land" >&2; exit 1;
+  }
+  # Belt-and-suspenders: the Send nav-item must be gone from the layout.
+  if grep -q 'route="sends"' "${SEND_LAYOUT}"; then
+    echo "rebrand: Send nav-item still present after hide-send patch" >&2; exit 1;
+  fi
+  echo "    rebranded: apps/web/src/app/layouts/user-layout.component.html (Send nav removed)"
+fi
+
 # Safety net: no user-facing "Vaultwarden Web" text node may survive in any HTML
 # template across apps/ or libs/. Catches strings that move/appear in a future
 # web-vault version bump before they ship to the login page.

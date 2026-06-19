@@ -41,6 +41,8 @@ COPY nextvault-brand/overlay ./nextvault-brand/overlay
 COPY nextvault-brand/svgs ./nextvault-brand/svgs
 # Theme variable overrides, appended to tw-theme.css by rebrand.sh
 COPY nextvault-brand/theme-overrides.css ./nextvault-brand/theme-overrides.css
+# Source patches (e.g. SSO-only login auto-redirect), git-applied by rebrand.sh
+COPY nextvault-brand/patches ./nextvault-brand/patches
 
 RUN ./scripts/checkout_web_vault.sh
 RUN ./scripts/rebrand.sh

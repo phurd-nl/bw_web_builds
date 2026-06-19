@@ -1,0 +1,15 @@
+diff --git a/apps/web/src/app/layouts/user-layout.component.html b/apps/web/src/app/layouts/user-layout.component.html
+index bb66cacc..330904cb 100644
+--- a/apps/web/src/app/layouts/user-layout.component.html
++++ b/apps/web/src/app/layouts/user-layout.component.html
+@@ -3,9 +3,7 @@
+     <bit-nav-logo [openIcon]="logo" route="." [label]="'passwordManager' | i18n"></bit-nav-logo>
+ 
+     <bit-nav-item icon="bwi-vault" [text]="'vaults' | i18n" route="vault"></bit-nav-item>
+-    @if (sendEnabled$ | async) {
+-      <bit-nav-item icon="bwi-send" [text]="'send' | i18n" route="sends"></bit-nav-item>
+-    }
++    <!-- NextVault: Send removed; secure sharing is handled by NextPass (SENDS_ALLOWED=false) -->
+     <bit-nav-group
+       icon="bwi-wrench"
+       [text]="'tools' | i18n"

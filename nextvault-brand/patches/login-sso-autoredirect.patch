@@ -1,0 +1,75 @@
+diff --git a/libs/auth/src/angular/login/login.component.ts b/libs/auth/src/angular/login/login.component.ts
+index c25ef254..d7405233 100644
+--- a/libs/auth/src/angular/login/login.component.ts
++++ b/libs/auth/src/angular/login/login.component.ts
+@@ -154,6 +154,16 @@ export class LoginComponent implements OnInit, OnDestroy {
+   }
+ 
+   async ngOnInit(): Promise<void> {
++    // ---- NextVault: SSO-only auto-redirect (skip the email/login page) ----
++    // This is an SSO_ONLY deployment, so send users straight to the IdP by
++    // reusing the /sso component's `?identifier=` auto-submit short-circuit.
++    // Escape hatch: open /login?manual=1 to reach the normal login page (e.g.
++    // if the IdP is unavailable). Loop guard inside the helper prevents the
++    // sso.component error-bounce-back-to-/login path from looping.
++    if (await this.maybeAutoRedirectToSso()) {
++      return;
++    }
++
+     // Add popstate listener to listen for browser back button clicks
+     window.addEventListener("popstate", this.handlePopState);
+ 
+@@ -177,6 +187,53 @@ export class LoginComponent implements OnInit, OnDestroy {
+     this.destroy$.complete();
+   }
+ 
++  /**
++   * NextVault SSO-only: auto-redirect the web client into the IdP so users
++   * never see the email/login page. Returns true if a redirect was triggered
++   * (the caller must stop further init in that case).
++   *
++   * Reuses the /sso component's IdP-initiated short-circuit
++   * (sso.component.ts: `if (qParams.identifier != null) { ... submit() }`).
++   * The identifier value is irrelevant to the Vaultwarden server — its
++   * /sso/prevalidate and /connect/authorize endpoints do not validate it — so
++   * any non-empty value works and no email is needed (the user is matched by
++   * the verified email claim returned by Entra, not by anything typed here).
++   */
++  private async maybeAutoRedirectToSso(): Promise<boolean> {
++    // Only the web client has the /sso route + sso-connector used here.
++    if (this.clientType !== ClientType.Web) {
++      return false;
++    }
++
++    const qParams = await firstValueFrom(this.activatedRoute.queryParams);
++
++    // Escape hatch: /login?manual=1 (or ?manual=true) shows the normal page.
++    if (qParams?.manual === "1" || qParams?.manual === "true") {
++      return false;
++    }
++
++    // Loop guard: sso.component.ts navigates back to /login on an SSO error.
++    // If we bounced back here within a few seconds of an auto-redirect, do not
++    // redirect again — fall through to the manual page so the user isn't stuck
++    // in a /login -> /sso -> /login loop. A later visit (e.g. logout hours
++    // later) is past the window and auto-redirects normally.
++    const ATTEMPT_KEY = "nextvaultSsoAutoRedirectAt";
++    try {
++      const now = Date.now();
++      const last = parseInt(window.sessionStorage.getItem(ATTEMPT_KEY) ?? "0", 10);
++      if (last && now - last < 10000) {
++        window.sessionStorage.removeItem(ATTEMPT_KEY);
++        return false;
++      }
++      window.sessionStorage.setItem(ATTEMPT_KEY, String(now));
++    } catch {
++      // sessionStorage unavailable (private mode/etc.) — proceed without guard.
++    }
++
++    await this.router.navigate(["/sso"], { queryParams: { identifier: "nextvault" } });
++    return true;
++  }
++
+   private async defaultOnInit(): Promise<void> {
+     let paramEmailIsSet = false;
+ 
